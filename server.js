@@ -85,6 +85,60 @@ router.post('/signin', function (req, res) {
     })
 });
 
+
+router.get('/movies', (req, res) => {
+    //const movie = await Movie.find({});
+
+    //req = getJSONObjectForMovie(req);
+
+    const movie = db.collection('movies').findOne({Title: req.body.Title});
+
+    try{
+        res.send(movie);
+    } catch(err) {
+        res.status(500).send(err);
+    }
+
+});
+
+router.post('/movies', (req, res) => {
+
+    //req = getJSONObjectForMovie(req);
+
+    const movie = new Movie(req.body);
+
+    try{
+        movie.save();
+        res.send(movie);
+    } catch(err) {
+        res.status(500).send(err);
+    }
+});
+
+router.put('/movies/:id', (req, res) => {
+    try {
+        const movie = Movie.findByIdAndUpdate(req._id, req.body)
+        movie.save()
+        res.send(movie)
+    } catch (err) {
+        res.status(500).send(err)
+    }
+});
+
+router.delete('/movies/:id', (req, res) => {
+    try {
+        const movie = Movie.findByIdAndDelete(req._id);
+
+        if (!movie) res.status(404).send("No item found");
+        res.status(200).send()
+
+    } catch (err) {
+        res.status(500).send(err)
+    }
+
+});
+
+
 app.use('/', router);
 app.listen(process.env.PORT || 8080);
 module.exports = app; // for testing only
